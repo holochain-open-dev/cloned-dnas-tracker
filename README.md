@@ -1,14 +1,37 @@
-# Holochain Cloned-Dnas-Tracker
+# CLONED_TRACKER_DNA MODULE
 
-This is a very small holochain zome to keep track of all cloned dnas for a given template that exist in your happ environment.
+Small zome to create and retrieve dna clones, in holochain RSM.
 
-This is the usual dev workflow:
+This module is designed to be included in other DNAs, assuming as little as possible from those. It is packaged as a holochain zome,
 
-1. Put this zome in a "lobby dna", which everyone in your happ has installed. 
-2. When alice clones a template DNA and creates a new DNA, they call `register_cloned_dna` in this zome to announce it to people that don't have it installed.
-3. Bob is exploring the app, and retrieves a list of existing DNAs he hasn't installed by calling `get_cloned_dnas_for_template`.
-4. If they want to join the DNA created by Alice, they can do so by cloning the template DNA with the same properties that Alice used to clone the template.
+## Documentation
 
-## Usage
+See our [`specification`](https://hackmd.io/BKUneWqYSOOgit6ZgKNYcQ?view).
 
-Clone this repository as a git submodule inside your zomes folder, and compile your application as usual.
+## Installation and usage
+
+### Including the zome in your DNA
+
+1. Create a new folder in the `zomes` of the consuming DNA, with the name you want to give to this zome in your DNA.
+2. Add a new `Cargo.toml` in that folder. In its content, paste the `Cargo.toml` content from any zome.
+3. Change the `name` properties of the `Cargo.toml` file to the name you want to give to this zome in your DNA.
+4. Add this zome as a dependency in the `Cargo.toml` file:
+```toml
+[dependencies]
+cloned_dna_tracker = {git = "https://github.com/holochain-open-dev/cloned-dnas-tracker", package = "cloned_dna_tracker"}
+```
+5. Create a `src` folder besides the `Cargo.toml` with this content:
+```rust
+extern crate cloned_dna_tracker;
+```
+6. Add the zome into your `*.dna.workdir/dna.json` file.
+7. Compile the DNA with the usual `CARGO_TARGET=target cargo build --release --target wasm32-unknown-unknown`.
+
+## Developer setup
+
+This respository is structured in the following way:
+
+- `zome/`: example DNA with the `cloned_dna_tracker` code.
+- Top level `Cargo.toml` is a virtual package necessary for other DNAs to include this zome by pointing to this git repository.
+
+Read the [Zome developer setup](/zome/README.md).
